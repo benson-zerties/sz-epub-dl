@@ -30,7 +30,7 @@ def epub_download(target_dir: str, credentials: dict, parser):
     time.sleep(2)
     try:
         # check if login was successful by looks for the customer-number
-        customer_number_el = driver.find_element_by_class_name('customer-number')
+        customer_number_el = WebDriverWait(driver, 10).until(EC.presence_of_element_located( (By.CLASS_NAME, 'customer-number') ) )
         customer_number = customer_number_el.get_attribute('innerHTML')
         print(customer_number)
     except:
