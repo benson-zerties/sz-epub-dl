@@ -69,10 +69,6 @@ def epub_download(target_dir: str, credentials: dict, parser):
     parser.feedParser(pdf_list_el.get_attribute('innerHTML'))
     epub_list = parser.getResult()
 
-    # debug output
-    with open('debug_stadtausgabe.html', 'w+') as f:
-        f.write(driver.page_source)
-
     issues = driver.find_elements(By.CLASS_NAME,'day')
     links = []
     for el in issues:
@@ -88,7 +84,15 @@ def epub_download(target_dir: str, credentials: dict, parser):
     for d in downloadIds:
         driver.get('https://epaper.sueddeutsche.de/download/' + d)
     driver.get('chrome://downloads/')
-   
+ 
+    download_manager = WebDriverWait(driver, 60).until(EC.presence_of_element_located( 
+        (By.CSS_SELECTOR, "downloads-manager") ) )
+    print('DL manager loaded')
+    # debug output
+    with open('debug_stadtausgabe.html', 'w+') as f:
+        f.write(driver.page_source)
+
+  
     # waiting for downloads to complete
     polling2.poll(
             lambda: all([el==100 or el==None for el in get_downloaded_files(driver)[1]]),
