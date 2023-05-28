@@ -21,23 +21,10 @@ def epub_download(target_dir: str, credentials: dict, parser):
     driver = webdriver.Chrome(options=options)
     
     # Login
-    driver.get("https://id.sueddeutsche.de/login")
-    username_form = driver.find_element('id', 'login_login-form')
-    pw_form = driver.find_element('id', 'password_login-form')
-    username_form.send_keys(credentials['user'])
-    pw_form.send_keys(credentials['password'])
-    driver.find_element('id', 'authentication-button').click()
-    time.sleep(2)
-    try:
-        # check if login was successful by looks for the customer-number
-        customer_number_el = WebDriverWait(driver, 10).until(EC.presence_of_element_located( (By.CLASS_NAME, 'customer-number') ) )
-        customer_number = customer_number_el.get_attribute('innerHTML')
-        print(customer_number)
-    except:
+    if not sz_utils.login(driver, credentials):
         driver.quit()
-        print('Login failed')
-        return
-
+        sys.exit(1)
+ 
     # wait some time for the login to be successfull: how to improve this?
     driver.get("https://reader.sueddeutsche.de/") # (1)
     parser.feedParser(driver.page_source)
