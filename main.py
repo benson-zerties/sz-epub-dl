@@ -6,6 +6,7 @@ import time
 import argparse
 from selenium import webdriver
 from sz_html_parser import SzHtmlParser
+import sz_utils
 
 def epub_download(target_dir: str, credentials: dict, parser):
     options = webdriver.ChromeOptions()
